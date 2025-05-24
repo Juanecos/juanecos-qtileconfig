@@ -34,7 +34,7 @@ from libqtile.lazy import lazy
 
 mod = "mod4"
 terminal = "alacritty"
-web_browser = "firefox"
+web_browser = "brave"
 editor = "code"
 explorer = "thunar"
 # blue = "#1DA1F2"
@@ -113,8 +113,8 @@ keys = [
 
     # Abrir thunar
     Key([mod], "e", lazy.spawn(explorer), desc="Open en thunar"),
-    # Abrir firefox
-    Key([mod], "w", lazy.spawn(web_browser), desc="Open firefox"),
+    # Abrir brave
+    Key([mod], "w", lazy.spawn(web_browser), desc="Open brave"),
     # Visual Studio Code
     Key([mod], "c", lazy.spawn(editor), desc="Open Code"),
 
@@ -150,22 +150,21 @@ for vt in range(1, 8):
 
 #defino el label que tendran los escritorios
 
-desk = ["󰣇","󰈹","","󰨞","",""]
-
-# desk = ["󰣇","󰈹","","󰨞","","󰝚","","󰡨",""]
+desk = ["󰣇","","","󰨞","","","󰖹","󰌔",""]
+# olddesk = ["󰣇","󰈹","","󰨞","","󰝚","","󰡨",""]
 
 
 """
 listado de nerdfonts
-1 nf-md-arch 
-2 nf-md-firefox
-3 nf-dev-terminal
-4 nf-md-microsoft_visual_studio_code
-5 nf-fa-folder_open
-6 nf-fa-music
-7 nf-fa-paint_brush
-8 nf-fa-docker
-9 nf-seti-config
+1 󰣇, nf-md-arch 
+2 , nf-md-chrome
+3 , nf-cod-terminal_bash
+4 󰨞, nf-md-microsoft_visual_studio_code
+5 , nf-fa-folder_open
+6 , nf-dev-android
+7 󰖹, nf-md-microsoft_xbox
+8 󰌔, nf-md-kodi
+9 , nf-seti-config
 """
 
 
@@ -185,11 +184,11 @@ keypad_mapping = {
     "4": "KP_Left",
     "5": "KP_Begin",
     "6": "KP_Right",
+    "7": "KP_Home",
+    "8": "KP_Up",
+    "9": "KP_Prior",
 
 }
-    # "7": "KP_Home",
-    # "8": "KP_Up",
-    # "9": "KP_Prior",
 for i in groups:
     alias= f"KP_{i.name}"
     keys.extend(
@@ -269,15 +268,16 @@ top_bar =[
     # widget.Chord(background=blue),
     widget.Sep(linewidth=0,padding=10),
     widget.CurrentLayoutIcon(fontsize=3),
+
     widget.Sep(linewidth=0,padding=sep),
     widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
     widget.ThermalSensor(background=colorv1, fontsize=fontsize3),
     widget.Sep(linewidth=0,padding=sep),
     widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
     widget.Memory(background=colorv1, format="{MemUsed: .2f}{mm}/{MemTotal: .2f}{mm}", measure_mem="G"),
-    widget.Sep(linewidth=0,padding=sep),
-    widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
-    widget.CPU(background=colorv1, format="{freq_current}GHz {load_percent}%",width=80),
+    # widget.Sep(linewidth=0,padding=sep),
+    # widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
+    # widget.CPU(background=colorv1, format="{freq_current}GHz {load_percent}%",width=80),
 
 
 # groupbox
