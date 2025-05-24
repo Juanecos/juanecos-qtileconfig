@@ -37,7 +37,8 @@ terminal = "alacritty"
 web_browser = "firefox"
 editor = "code"
 explorer = "thunar"
-blue = "#1DA1F2"
+# blue = "#1DA1F2"
+blue = "#7F8CAA"
 ars = "#8C426B"
 
 
@@ -103,7 +104,7 @@ keys = [
     Key([mod, "shift"], "r", lazy.spawn("qtile cmd-obj -o cmd -f restart"), desc="Restart Qtile"),
         
     # Menu de rofi
-    Key([mod], "m", lazy.spawn("zsh /home/juanecos/.config/rofi/launchers/type-1/launcher.sh"), desc="Rofi menu"),
+    Key([mod], "m", lazy.spawn("zsh /home/juanecos/.config/rofi/launchers/type-2/launcher.sh"), desc="Rofi menu"),
     
     # Menu de apagado 
     Key([mod, "control"], "delete", lazy.spawn("zsh /home/juanecos/.config/rofi/powermenu/type-2/powermenu.sh"), desc="Rofi menu"),
@@ -148,7 +149,10 @@ for vt in range(1, 8):
     )
 
 #defino el label que tendran los escritorios
-desk = ["󰣇","󰈹","","󰨞","","󰝚","","󰡨",""]
+
+desk = ["󰣇","󰈹","","󰨞","",""]
+
+# desk = ["󰣇","󰈹","","󰨞","","󰝚","","󰡨",""]
 
 
 """
@@ -181,11 +185,11 @@ keypad_mapping = {
     "4": "KP_Left",
     "5": "KP_Begin",
     "6": "KP_Right",
-    "7": "KP_Home",
-    "8": "KP_Up",
-    "9": "KP_Prior",
-}
 
+}
+    # "7": "KP_Home",
+    # "8": "KP_Up",
+    # "9": "KP_Prior",
 for i in groups:
     alias= f"KP_{i.name}"
     keys.extend(
@@ -220,8 +224,8 @@ for i in groups:
             #     desc="move focused window to group {}".format(i.name)),
         ]
     )
-borderfocus = "#1887CB"
-bordernormal= "#4a5a61"
+borderfocus = "#3C5875"
+bordernormal= "#000000"
 
 layouts = [
     layout.Columns(margin=4, border_width=2, border_focus=borderfocus,border_normal=bordernormal),
@@ -248,65 +252,91 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
-colorv1="#050915"
-colorv2="#142D41"
-colorv3="#103748"
-colorv4="#562F34"
-colorv5="#624D48"
+# colorv1="#101426"
+colorv1="#333446"
 
-        
+
+
+
+fontsize1 = 30 #iconos bara
+fontsize2 = 35 #iconos escritorio
+fontsize3 = 14 #textos
+
+sep = 14
+
+top_bar =[
+
+    # widget.Chord(background=blue),
+    widget.Sep(linewidth=0,padding=10),
+    widget.CurrentLayoutIcon(fontsize=3),
+    widget.Sep(linewidth=0,padding=sep),
+    widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
+    widget.ThermalSensor(background=colorv1, fontsize=fontsize3),
+    widget.Sep(linewidth=0,padding=sep),
+    widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
+    widget.Memory(background=colorv1, format="{MemUsed: .2f}{mm}/{MemTotal: .2f}{mm}", measure_mem="G"),
+    widget.Sep(linewidth=0,padding=sep),
+    widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
+    widget.CPU(background=colorv1, format="{freq_current}GHz {load_percent}%",width=80),
+
+
+# groupbox
+    widget.Spacer(length=bar.STRETCH), 
+    widget.GroupBox(
+        fontsize=fontsize2,
+        highlight_method='block',  # Opcional, para resaltar grupos activos
+        active="#FFFFFF",            # Color de los grupos activos
+        inactive="#9EAFAE",          # Color de los grupos inactivos
+        this_current_screen_border=blue,  # Borde del grupo activo
+        padding=7,
+        ),
+    widget.Spacer(length=bar.STRETCH), 
+
+
+
+
+#widgets sistema
+    widget.Chord(background=blue),
+    widget.Sep(linewidth=0,padding=sep),
+    widget.Systray(background=colorv1),
+    widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
+    widget.Clock(format='%d/%m/%y %H:%M',background=colorv1),
+    widget.Sep(linewidth=0,padding=sep),
+
+
+
+]
+
+# max_width=1366
+# max_height=768
+top_bar_height=40
+# top_bar_width=320
+
+
 screens = [
     Screen(
-        top=bar.Bar(
-            [
-                widget.GroupBox(
-                    
-                    fontsize=30,
-                    highlight_method='block',  # Opcional, para resaltar grupos activos
-                    active="#ffffff",            # Color de los grupos activos
-                    inactive="#9dacc4",          # Color de los grupos inactivos
-                    this_current_screen_border=blue,  # Borde del grupo activo
-                    padding=7,
-                    ),
-                
-                widget.Sep(linewidth=0,padding=10),
-                widget.WindowName(),
-                widget.Chord(background=blue),
-                widget.Sep(linewidth=0,padding=10),
-                widget.Pomodoro(),
-                widget.Sep(linewidth=0,padding=10), 
-                widget.CurrentLayoutIcon(),
-                widget.Sep(linewidth=0,padding=10),
-                widget.TextBox(text="", fontsize="27", foreground=colorv5, padding=-2),
-                widget.TextBox(text="", fontsize="27", foreground="#fff", background=colorv5),
-                widget.ThermalSensor(background=colorv5),
-                widget.TextBox(text="", fontsize="27", foreground=colorv5, padding=-2),
-                widget.TextBox(text="", fontsize="27", foreground=colorv4, padding=-2),
-                #widget.CheckUpdates(display_format="{updates}"),
-                widget.TextBox(text="", fontsize="27", foreground="#fff", background=colorv4),
-                widget.Memory(background=colorv4, format="{MemUsed: .2f}{mm}/{MemTotal: .2f}{mm}", measure_mem="G"),
-                widget.TextBox(text="", fontsize="27", foreground=colorv3, padding=-2),
-                widget.TextBox(text="", fontsize="27", foreground="#fff", background=colorv3),
-                widget.CPU(background=colorv3, format="{freq_current}GHz {load_percent}%",width=80),
-                widget.TextBox(text="", fontsize="27", foreground=colorv3, padding=-2),
-                #mygroupwidget((widget.CurrentLayout(background=colorv3)),"down",colorv3),
-                widget.TextBox(text="", fontsize="27", foreground=colorv2, padding=-2),
-                widget.TextBox(text="", fontsize="27", foreground="#fff", background=colorv2),
-                widget.Clock(format='%d/%m/%y %H:%M',background=colorv2),
-                widget.TextBox(text="", fontsize="27", foreground=colorv2, padding=-2),
-                widget.TextBox(text="", fontsize="27", foreground=colorv1, padding=-2),
-                widget.Systray(background=colorv1),
-                widget.Sep(linewidth=0,padding=10, background=colorv1),
-            ],
-            28,
-            border_width=[0, 0, 0, 2],  # Draw top and bottom borders
-        ),
-        # You can uncomment this variable if you see that on X11 floating resize/moving is laggy
-        # By default we handle these events delayed to already improve performance, however your system might still be struggling
-        # This variable is set to None (no cap) by default, but you can set it to 60 to indicate that you limit it to 60 events per second
-        # x11_drag_polling_rate = 60,
-    ),
+        top=bar.Bar(top_bar,top_bar_height,background = colorv1,border_color= colorv1,),
+
+    )
 ]
+#? descomentar este fake screen si quiero probarlas
+# fake_screens = [
+#     Screen(
+#         # Puedes definir el tamaño y la posición de la pantalla falsa aquí
+#         top=bar.Bar(top_bar,top_bar_height,background = colorv1,border_color= colorv1,),
+#             x=523,  # Posición X (desde la izquierda)
+#             y=0,    # Posición Y (desde arriba)
+#             width=top_bar_width, # Ancho deseado para la barra (y para esta "pantalla falsa")
+#             height=top_bar_height, # Altura deseada para la barra
+#     ),
+#     Screen(
+#         bottom = bar.Bar(bottom_bar,24,background = colorv1,border_color= colorv1,),
+#         x=0,
+#         y=top_bar_height,
+#         width= max_width,
+#         height=max_height-top_bar_height
+#     )
+# ]
 
 # Drag floating layouts.
 mouse = [
