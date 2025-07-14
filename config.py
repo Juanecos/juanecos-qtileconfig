@@ -74,8 +74,10 @@ keys = [
 
 
     # Captura de pantalla
-    Key([], "Print", lazy.spawn("scrot /home/juanecos/Imágenes/Screenshots/screenshot_%Y-%m-%d_%H-%M-%S.png"), desc="Captura toda la pantalla"),
-    Key([mod, "Shift"], "s", lazy.spawn("scrot -s /home/juanecos/Imágenes/Screenshots/screenshot_%Y-%m-%d_%H-%M-%S.png"), desc="Captura seleccion"),
+    Key([], "Print", lazy.spawn("scrot /home/juanecos/Imágenes/Screenshots/screenshot_%Y-%m-%d_%H-%M-%S.png && scrot -e 'xclip -selection clipboard -t image/png -i $f' "), desc="Captura toda la pantalla"),
+    # Key([], "Print", lazy.spawn("scrot /home/juanecos/Imágenes/Screenshots/screenshot_%Y-%m-%d_%H-%M-%S.png"), desc="Captura toda la pantalla"),
+    Key([mod, "Shift"], "s", lazy.spawn("scrot -s -o /home/juanecos/Imágenes/Screenshots/emporal.png && scrot -e 'xclip -selection clipboard -t image/png -i $f'"), desc="Captura seleccion"),
+    # Key([mod, "Shift"], "s", lazy.spawn("scrot -s -o /tmp/screenshot.png && xclip -selection clipboard -t image/png -i /tmp/screenshot.png"), desc="Captura seleccion"),
     Key([mod, "Control"], "Print", lazy.spawn("scrot -u /home/juanecos/Imágenes/Screenshots/screenshot_%Y-%m-%d_%H-%M-%S.png"), desc="Captura seleccion"),
     
     # scrot -u para la ventana  actual
@@ -104,10 +106,10 @@ keys = [
     Key([mod, "shift"], "r", lazy.spawn("qtile cmd-obj -o cmd -f restart"), desc="Restart Qtile"),
         
     # Menu de rofi
-    Key([mod], "m", lazy.spawn("zsh /home/juanecos/.config/rofi/launchers/type-2/launcher.sh"), desc="Rofi menu"),
+    Key([mod], "m", lazy.spawn("zsh /home/juanecos/.config/rofi/scripts/launcher_t1"), desc="Rofi menu"),
     
     # Menu de apagado 
-    Key([mod, "control"], "delete", lazy.spawn("zsh /home/juanecos/.config/rofi/powermenu/type-2/powermenu.sh"), desc="Rofi menu"),
+    Key([mod, "control"], "delete", lazy.spawn("zsh /home/juanecos/.config/rofi/powermenu/type-1/powermenu.sh"), desc="Rofi menu"),
     
     # Teclas personalizadas
 
@@ -150,7 +152,8 @@ for vt in range(1, 8):
 
 #defino el label que tendran los escritorios
 
-desk = ["󰣇","","","󰨞","","","󰖹","󰌔",""]
+desk = ["󰣇","","󰨞","","","","󰓓","󰌔",""]
+
 # olddesk = ["󰣇","󰈹","","󰨞","","󰝚","","󰡨",""]
 
 
@@ -158,11 +161,11 @@ desk = ["󰣇","","","󰨞","","","󰖹","󰌔",""]
 listado de nerdfonts
 1 󰣇, nf-md-arch 
 2 , nf-md-chrome
-3 , nf-cod-terminal_bash
-4 󰨞, nf-md-microsoft_visual_studio_code
+3 󰨞, nf-md-microsoft_visual_studio_code
+4 , nf-cod-terminal_bash
 5 , nf-fa-folder_open
 6 , nf-dev-android
-7 󰖹, nf-md-microsoft_xbox
+7 󰓓, nf-md-steam
 8 󰌔, nf-md-kodi
 9 , nf-seti-config
 """
@@ -223,7 +226,7 @@ for i in groups:
             #     desc="move focused window to group {}".format(i.name)),
         ]
     )
-borderfocus = "#3C5875"
+borderfocus = "#61768D"
 bordernormal= "#000000"
 
 layouts = [
@@ -251,14 +254,14 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
-# colorv1="#101426"
-colorv1="#333446"
+# colorv1="#333446"
+colorv1 = "#3334465E"
 
 
 
 
 fontsize1 = 30 #iconos bara
-fontsize2 = 35 #iconos escritorio
+fontsize2 = 30 #iconos escritorio
 fontsize3 = 14 #textos
 
 sep = 14
@@ -275,9 +278,6 @@ top_bar =[
     widget.Sep(linewidth=0,padding=sep),
     widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
     widget.Memory(background=colorv1, format="{MemUsed: .2f}{mm}/{MemTotal: .2f}{mm}", measure_mem="G"),
-    # widget.Sep(linewidth=0,padding=sep),
-    # widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
-    # widget.CPU(background=colorv1, format="{freq_current}GHz {load_percent}%",width=80),
 
 
 # groupbox
@@ -296,7 +296,7 @@ top_bar =[
 
 
 #widgets sistema
-    widget.Chord(background=blue),
+    widget.Chord(background=colorv1),
     widget.Sep(linewidth=0,padding=sep),
     widget.Systray(background=colorv1),
     widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
@@ -309,13 +309,13 @@ top_bar =[
 
 # max_width=1366
 # max_height=768
-top_bar_height=40
+top_bar_height=30
 # top_bar_width=320
 
 
 screens = [
     Screen(
-        top=bar.Bar(top_bar,top_bar_height,background = colorv1,border_color= colorv1,),
+        top=bar.Bar(top_bar,top_bar_height,background=colorv1,border_color=colorv1),
 
     )
 ]

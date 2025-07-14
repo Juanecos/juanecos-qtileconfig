@@ -15,8 +15,9 @@ picom &
 # nitrogen
 nitrogen --restore &
 
-#mapeo de tecla p que no me sirve, mejor oner la tecla ¿¡ qie esta al lado del backspace
+#mapeo de tecla p que no me sirve, mejor oner la tecla ¿¡ qie esta al lado del backspace y la del Escape
 xmodmap -e "keycode 21=p"
+xmodmap -e "keycode 49=Escape"
 
 #redshift default color
 redshift -P -O 4000
