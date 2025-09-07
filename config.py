@@ -27,9 +27,16 @@ import os
 import subprocess
 from libqtile import hook
 
-from libqtile import bar, layout, qtile, widget
+from qtile_extras import widget
+from qtile_extras.widget.decorations import RectDecoration, BorderDecoration
+
+# from qtile_extras import widget as ewidget
+
+from libqtile import bar, layout, qtile #, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
+
+from qtile_extras.widget.groupbox2 import GroupBoxRule
 
 
 mod = "mod4"
@@ -38,8 +45,21 @@ web_browser = "brave"
 editor = "code"
 explorer = "thunar"
 # blue = "#1DA1F2"
-blue = "#7F8CAA"
+# blue = "#7F8CAA"
 ars = "#8C426B"
+
+#colors
+background = "#1e2030"
+base = "#2D2F3F"
+alpha="#00000000"
+foreground = "#cdd6f4"
+primary = "#89b4fa"
+secondary = "#1e2030"
+green = "#a6da95"
+peach = "#f5a97f"
+mauve = "#c6a0f6"
+blue = "#8aadf4"
+red = "#f38ba8"
 
 
 keys = [
@@ -106,10 +126,10 @@ keys = [
     Key([mod, "shift"], "r", lazy.spawn("qtile cmd-obj -o cmd -f restart"), desc="Restart Qtile"),
         
     # Menu de rofi
-    Key([mod], "m", lazy.spawn("zsh /home/juanecos/.config/rofi/scripts/launcher_t1"), desc="Rofi menu"),
+    Key([mod], "m", lazy.spawn("rofi -show drun -theme ~/.config/rofi/themes/catppuccin.rasi"), desc="Rofi menu"),
     
     # Menu de apagado 
-    Key([mod, "control"], "delete", lazy.spawn("zsh /home/juanecos/.config/rofi/powermenu/type-1/powermenu.sh"), desc="Rofi menu"),
+    Key([mod, "control"], "delete", lazy.spawn("zsh ~/.config/rofi/powermenu/type-1/powermenu.sh"), desc="Rofi menu"),
     
     # Teclas personalizadas
 
@@ -151,6 +171,18 @@ for vt in range(1, 8):
     )
 
 #defino el label que tendran los escritorios
+
+# desk=[
+# "",
+# "",
+# "",
+# "",
+# "",
+# "",
+# "",
+# ""
+# ]
+
 
 desk = ["󰣇","","󰨞","","","","󰓓","󰌔",""]
 
@@ -226,22 +258,22 @@ for i in groups:
             #     desc="move focused window to group {}".format(i.name)),
         ]
     )
-borderfocus = "#61768D"
-bordernormal= "#000000"
+
+borderwindow=2
 
 layouts = [
-    layout.Columns(margin=4, border_width=2, border_focus=borderfocus,border_normal=bordernormal),
+    layout.Columns(margin=4, border_width=borderwindow, border_focus=mauve,border_normal=secondary),
     layout.Max(margin=0),
     # Try more layouts by unleashing below layouts.
-    # layout.Stack(num_stacks=2),
+    # layout.Stack(num_stacks=borderwindow),
     #layout.Bsp(),
-    layout.Matrix(margin=4, border_width=2, border_focus=borderfocus,border_normal=bordernormal),
+    layout.Matrix(margin=4, border_width=borderwindow, border_focus=mauve,border_normal=secondary),
     #layout.MonadTall(),
     #layout.MonadWide(),
     #layout.RatioTile(),
-    layout.Tile(margin=4, border_width=2, border_focus=borderfocus,border_normal=bordernormal),
-    layout.TreeTab(margin=4, border_width=2, border_focus=borderfocus,border_normal=bordernormal),
-    layout.Floating(border_width=2, border_focus=borderfocus,border_normal=bordernormal),
+    layout.Tile(margin=4, border_width=borderwindow, border_focus=mauve,border_normal=secondary),
+    layout.TreeTab(margin=4, border_width=borderwindow, border_focus=mauve,border_normal=secondary),
+    layout.Floating(border_width=borderwindow, border_focus=mauve,border_normal=secondary),
     
     #layout.VerticalTile(),
     #layout.Zoomy(),
@@ -262,7 +294,7 @@ colorv1 = "#3334465E"
 
 fontsize1 = 30 #iconos bara
 fontsize2 = 30 #iconos escritorio
-fontsize3 = 14 #textos
+fontsize3 = 16 #textos
 
 sep = 14
 
@@ -270,37 +302,88 @@ top_bar =[
 
     # widget.Chord(background=blue),
     widget.Sep(linewidth=0,padding=10),
-    widget.CurrentLayoutIcon(fontsize=3),
+    widget.CurrentLayout(use_mask=True, mode='icon', foreground=peach),
+
+    widget.GroupBox2(
+    #     font="JetBrainsMono Nerd Font",
+        fontsize=23,
+        padding_x=10, 
+        padding_y=0,
+        margin_y=0,
+        use_mouse_wheel=True,
+    #     # visible_groups=['1','2','3','4','5','6','7','8','9'],  # opcional
+        rules=[
+            # Foco en ESTA pantalla: “píldora” azul con texto oscuro
+            GroupBoxRule(
+                block_colour=base,
+                block_corner_radius=5,
+                text_colour=green,
+                line_colour=mauve
+            ).when(screen=GroupBoxRule.SCREEN_THIS, focused=True),
+
+            # Ocupado sin foco (misma pantalla): solo borde
+            GroupBoxRule(
+                block_border_colour=mauve,
+                block_border_width=2,
+                block_corner_radius=5,
+                text_colour=mauve
+            ).when(screen=GroupBoxRule.SCREEN_THIS, focused=False, occupied=True),
+
+            # Vacío: texto gris
+            GroupBoxRule(text_colour=foreground).when(occupied=False),
+
+            # Activo en OTRA pantalla: subrayado inferior
+            GroupBoxRule(
+                line_colour="89b4fa", line_width=3,
+                line_position=GroupBoxRule.LINE_BOTTOM
+            ).when(screen=GroupBoxRule.SCREEN_OTHER, focused=True),
+
+            # Urgente: bloque rojo
+            GroupBoxRule(
+                block_colour=background, text_colour=blue, block_corner_radius=5
+            ).when(urgent=True),
+        ],
+    ),
 
     widget.Sep(linewidth=0,padding=sep),
-    widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
-    widget.ThermalSensor(background=colorv1, fontsize=fontsize3),
-    widget.Sep(linewidth=0,padding=sep),
-    widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
-    widget.Memory(background=colorv1, format="{MemUsed: .2f}{mm}/{MemTotal: .2f}{mm}", measure_mem="G"),
-
+    
 
 # groupbox
-    widget.Spacer(length=bar.STRETCH), 
-    widget.GroupBox(
-        fontsize=fontsize2,
-        highlight_method='block',  # Opcional, para resaltar grupos activos
-        active="#FFFFFF",            # Color de los grupos activos
-        inactive="#9EAFAE",          # Color de los grupos inactivos
-        this_current_screen_border=blue,  # Borde del grupo activo
-        padding=7,
-        ),
-    widget.Spacer(length=bar.STRETCH), 
+    # widget.Spacer(length=bar.STRETCH),
+    
+    widget.WindowCount(foreground=red),
+    widget.WindowName(max_chars=40,foreground=red),
+
+    # widget.Spacer(length=bar.STRETCH), 
 
 
 
 
 #widgets sistema
-    widget.Chord(background=colorv1),
+    widget.Chord(background=background),
     widget.Sep(linewidth=0,padding=sep),
-    widget.Systray(background=colorv1),
-    widget.TextBox(text="", fontsize=fontsize1, foreground="#fff", background=colorv1),
-    widget.Clock(format='%d/%m/%y %H:%M',background=colorv1),
+    widget.Systray(background=background),
+
+    widget.Sep(linewidth=0, padding=sep),
+    widget.TextBox(text="", fontsize=fontsize3, foreground=green, background=background),
+    widget.ThermalSensor(background=background, foreground=green),
+
+    widget.Sep(linewidth=0, padding=sep),
+    widget.TextBox(text="﬙", fontsize=fontsize3, foreground=green, background=background),
+    widget.CPU(background=background, foreground=green, format="{load_percent}%"),
+
+    widget.Sep(linewidth=0, padding=sep),
+    widget.TextBox(text="", fontsize=fontsize3, foreground=green, background=background),
+    widget.Memory(background=background, format="{MemUsed: .2f}{mm}", measure_mem="G", foreground=green),
+
+
+    widget.Sep(linewidth=0, padding=sep),
+
+    widget.TextBox(text="", fontsize=fontsize3, foreground=primary, background=background),
+    widget.Clock(format='%H:%M',foreground=primary ,background=background),
+    widget.TextBox(text="", fontsize=fontsize3, foreground=primary, background=background),
+    widget.Clock(format='%a %d %b',foreground=primary ,background=background),
+
     widget.Sep(linewidth=0,padding=sep),
 
 
@@ -315,8 +398,7 @@ top_bar_height=30
 
 screens = [
     Screen(
-        top=bar.Bar(top_bar,top_bar_height,background=colorv1,border_color=colorv1),
-
+        top=bar.Bar(top_bar,top_bar_height,background=background,border_color=alpha,borderwidth=0)
     )
 ]
 #? descomentar este fake screen si quiero probarlas
