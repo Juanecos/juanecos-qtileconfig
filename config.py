@@ -300,11 +300,12 @@ fontsize2 = 30 #iconos escritorio
 fontsize3 = 16 #textos
 
 sep = 14
+sep2 = 7
 # Widget de volumen optimizado para PipeWire/PulseAudio
 volume = widget.Volume(
     # Especificar el dispositivo de audio explícitamente
     device='default',
-    foreground="#fff",
+    foreground=primary,
     
     # Formato de visualización
     fmt='{} ',
@@ -340,7 +341,7 @@ top_bar =[
     # widget.Chord(background=blue),
     widget.Sep(linewidth=0,padding=10),
     widget.TextBox(text="󰕮", padding=7,fontsize=fontsize2, foreground=yellow, mouse_callbacks={'Button1': lazy.spawn(menu_launcher)}),
-
+    widget.Sep(linewidth=0,padding=sep),
 
     widget.GroupBox2(
     #     font="JetBrainsMono Nerd Font",
@@ -396,10 +397,7 @@ top_bar =[
 #widgets sistema
     widget.Chord(background=background),
     widget.Sep(linewidth=0,padding=sep),
-    widget.Systray(background=background),
-    volume,
-    widget.UPowerWidget(mode="icon"),
-
+   
     widget.Sep(linewidth=0, padding=sep),
     widget.TextBox(text="", fontsize=fontsize3, foreground=green, background=background),
     widget.ThermalSensor(background=background, foreground=green),
@@ -412,8 +410,11 @@ top_bar =[
     widget.TextBox(text="", fontsize=fontsize3, foreground=green, background=background),
     widget.Memory(background=background, format="{MemUsed: .2f}{mm}", measure_mem="G", foreground=green),
 
-    #widget.Sep(linewidth=0, padding=sep),
-   
+    widget.Sep(linewidth=0, padding=sep2),
+    widget.Systray(background=background),
+    widget.UPowerWidget(mode="icon"),
+    volume,
+    widget.Sep(linewidth=0, padding=sep2),
 
     widget.TextBox(text="", padding=7 ,fontsize=fontsize3, foreground=primary, background=background),
     widget.Clock(format='%H:%M', foreground=primary ,background=background),
