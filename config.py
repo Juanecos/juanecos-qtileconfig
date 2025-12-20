@@ -316,17 +316,15 @@ volume = widget.Volume(
     # Actualizar cada segundo
     update_interval=1,
     
-    # Comandos personalizados para PipeWire
-    volume_up_command='pactl set-sink-volume @DEFAULT_SINK@ +5%',
-    volume_down_command='pactl set-sink-volume @DEFAULT_SINK@ -5%',
-    mute_command='pactl set-sink-mute @DEFAULT_SINK@ toggle',
+    volume_up_command='pamixer -i 5 --cap-volume 150',
+    volume_down_command='pamixer -d 5',
+    mute_command='pamixer -t',
     
-    # Atajos de ratón
     mouse_callbacks={
-        'Button1': lazy.spawn('pavucontrol'),  # Control de volumen GUI
-        'Button3': lazy.spawn('pactl set-sink-mute @DEFAULT_SINK@ toggle'),
-        'Button4': lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ +5%'),  # Scroll up
-        'Button5': lazy.spawn('pactl set-sink-volume @DEFAULT_SINK@ -5%'),  # Scroll down
+        'Button1': lazy.spawn('pavucontrol'),
+        'Button3': lazy.spawn('pamixer -t'),
+        'Button4': lazy.spawn('pamixer -i 5 '), # Scroll up
+        'Button5': lazy.spawn('pamixer -d 5'),                 # Scroll down
     },
     
     # Configuración adicional
