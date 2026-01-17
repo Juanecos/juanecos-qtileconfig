@@ -5,9 +5,10 @@
 
 #udiskie -t &
 nm-applet &
+#onboard
 #onboard &
 
-sxhkd &
+#sxhkd &
 #para que funcionen debe estar el widget de systray
 picom &
 # nitrogen
