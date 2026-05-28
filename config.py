@@ -39,10 +39,17 @@ from libqtile import bar, layout, qtile, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
-
+#from batteryWidget import get_battery_text
 # from qtile_extras.widget.groupbox2 import GroupBoxRule
+import importlib
+import generated_colors as gc
+from batteryWidget import get_battery_text
 
-# TODO: modularizar todo esto en un futuro y usar logging con try except
+importlib.reload(gc) 
+colors = gc.colors
+BAR_OPACITY = getattr(gc, "BAR_OPACITY", 1.0)
+
+# TODO: modularizar todo esto en un futuro y usar logging con try  zexcept
 homedir = "/home/juanecos"
 mod = "mod4"
 terminal = "alacritty"
@@ -51,23 +58,103 @@ editor = "code"
 explorer = "thunar"
 # blue = "#1DA1F2"
 # blue = "#7F8CAA"
-ars = "#8C426B"
+#ars = "#8C426B"
 
 # colors
 
-background = "#1e2030"
-base = "#2D2F3F"
-alpha = "#00000000"
-foreground = "#cdd6f4"
-primary = "#89b4fa"
-secondary = "#1e2030"
-yellow = "#e5c890"
-green = "#a6da95"
-peach = "#f5a97f"
-mauve = "#c6a0f6"
-blue = "#8aadf4"
-darkblue = "#2a52a3"
-red = "#f38ba8"
+#background = "#1e2030"
+#base = "#2D2F3F"
+#alpha = "#00000000"
+#foreground = "#cdd6f4"
+#primary = "#89b4fa"
+#secondary = "#1e2030"
+#yellow = "#e5c890"
+#green = "#a6da95"
+##peach = "#f5a97f"
+#mauve = "#c6a0f6"
+#blue = "#8aadf4"
+#darkblue = "#2a52a3"
+#red = "#f38ba8"
+# colors (light theme)
+# colors (light theme)
+
+# wallpaper-based light palette (suggested)
+
+# dark warm palette (para este wallpaper)
+
+# ars = "#9B4C7B"          # acento magenta cálido
+# background = "#1A1715"   # warm dark más cercano al wallpaper
+# base = "#201C1A"         # panel / superficie
+# alpha = "#00000000"     
+# foreground = "#EADFC8"   # texto crema (coherente con cabello y velas)
+# primary = "#D8A047"      # oro/ámbar (repetición de la iluminación)
+# secondary = "#3B322C"    # superficie secundaria
+# yellow = "#E5BD67"       # amarillo cálido, sin quemar
+# green = "#7FA36B"        # verde oliva para metrics
+# peach = "#C87A54"        # cobre/terracota (muy bien con piel/velas)
+# mauve = "#A98AD5"        # mauve cálido sin tonalidad fría
+# blue = "#53648C"         # azul noche desaturado
+# darkblue = "#2D3550"     # azul profundo como sombra
+# red = "#BB545E"          # rojo cálido (no sangre)
+
+# Blue Dream Neon Theme (dark mode)
+# colors = {
+#     "background": "#111111",
+#     "foreground": "#ffffff",
+#     "primary": "#4EA4FF",
+#     "secondary": "#7C4DFF",
+#     "yellow": "#FFC857",
+#     "green": "#6AD69A",
+#     "peach": "#FF8869",
+#     "mauve": "#B388FF",
+#     "blue": "#4190E0",
+#     "darkblue": "#1B2A48",
+#     "red": "#FF5370",
+# }
+c = colors
+
+# Alias básicos (por comodidad, opcional)
+background = c["background"]
+foreground = c["foreground"]
+
+# Roles semánticos según lo que me dijiste
+role_colors = {
+    "cpu":          c["green"],     # grupo CPU/RAM/TEMP
+    "ram":          c["green"],
+    "temp":         c["green"],
+
+    "volume":       c["mauve"],     # volumen
+    "battery":      c["mauve"],     # batería
+
+    "date":         c["blue"],      # fecha
+    "time":         c["blue"],      # hora
+
+    "power":        c["peach"],     # icono de power
+
+    "launcher":     c["yellow"],    # launcher izquierda
+
+    # groupbox
+    "groupbox_active":   foreground,   # texto de grupos activos
+    "groupbox_inactive": c["blue"],    # texto de grupos inactivos
+    "groupbox_urgent":   c["red"],     # grupos en estado urgente
+    "groupbox_highlight": c["mauve"],  # línea / borde de grupo activo
+    "groupbox_highlight_border": c["yellow"],  # línea / borde de grupo activo
+
+    # títulos y conteo de ventanas
+    "window_title": c["red"],          # WindowName
+    "window_count": c["red"],          # WindowCount
+
+    # layout actual (icono)
+    "layout_icon": c["peach"],
+}
+
+# def update_colors(new_colors: dict):
+#     global colors
+#     colors.update(new_colors)
+
+# def reload():
+#     qtile.cmd_reload_config()
+
 
 menu_launcher = f"rofi -show drun -theme ~/.config/rofi/themes/catppuccin.rasi"
 menu_power = f"{homedir}/.config/rofi/powermenu.sh"
@@ -219,7 +306,7 @@ for vt in range(1, 8):
 # ]
 
 
-desk = ["󰣇", "", "󰨞", "", "", "", "󰓓", "󰌔", ""]
+desk = ["󰣇", "", "󰨞", "", "", "", "󰓓", "󰓇", ""]
 
 # olddesk = ["󰣇","󰈹","","󰨞","","󰝚","","󰡨",""]
 
@@ -233,7 +320,7 @@ listado de nerdfonts
 5 , nf-fa-folder_open
 6 , nf-dev-android
 7 󰓓, nf-md-steam
-8 󰌔, nf-md-kodi
+8 , nf-md-spotify
 9 , nf-seti-config
 """
 
@@ -297,26 +384,26 @@ borderwindow = 2
 
 layouts = [
     layout.Columns(
-        margin=4, border_width=borderwindow, border_focus=mauve, border_normal=secondary
+        margin=4, border_width=borderwindow, border_focus=c["mauve"], border_normal=background
     ),
     layout.Max(margin=0),
     # Try more layouts by unleashing below layouts.
     # layout.Stack(num_stacks=borderwindow),
     # layout.Bsp(),
     layout.Matrix(
-        margin=4, border_width=borderwindow, border_focus=mauve, border_normal=secondary
+        margin=4, border_width=borderwindow, border_focus=c["mauve"], border_normal=background
     ),
     # layout.MonadTall(),
     # layout.MonadWide(),
     # layout.RatioTile(),
     layout.Tile(
-        margin=4, border_width=borderwindow, border_focus=mauve, border_normal=secondary
+        margin=4, border_width=borderwindow, border_focus=c["mauve"], border_normal=background
     ),
     layout.TreeTab(
-        margin=4, border_width=borderwindow, border_focus=mauve, border_normal=secondary
+        margin=4, border_width=borderwindow, border_focus=c["mauve"], border_normal=background
     ),
     layout.Floating(
-        border_width=borderwindow, border_focus=mauve, border_normal=secondary
+        border_width=borderwindow, border_focus=c["mauve"], border_normal=background
     ),
     # layout.VerticalTile(),
     # layout.Zoomy(),
@@ -330,36 +417,46 @@ fontsize3 = 16  # textos
 
 sep = 14
 sep2 = 7
-batterywidget = widget.Battery(
-    format="{char} {percent:2.0%}",
-    charge_char="󰂄",
-    discharge_char="",
-    full_char="󰁹",
-    unknown_char="󰂑",
+
+
+batterywidget = widget.GenPollText(
+    update_interval=30,
+    func=get_battery_text,
+    foreground="#ffffff",
     fontsize=12,
-    battery_icons=[
-        "󰂃",  # 0-10%
-        "󰂃",  # 10-20%
-        "󰁺",  # 20-30%
-        "󰁻",  # 30-40%
-        "󰁼",  # 40-50%
-        "󰁽",  # 50-60%
-        "󰁾",  # 60-70%
-        "󰁿",  # 70-80%
-        "󰂀",  # 80-90%
-        "󰂁",  # 90-100%
-    ],
 )
+
+# batterywidget = widget.Battery(
+#     format="{char} {percent:2.0%}",
+#     foreground=role_colors["battery"],
+#     charge_char="󰂄",
+#     discharge_char="",
+#     full_char="󰁹",
+#     unknown_char="󰂑",
+#     fontsize=12,
+#     battery_icons=[
+#         "󰂃",  # 0-10%
+#         "󰂃",  # 10-20%
+#         "󰁺",  # 20-30%
+#         "󰁻",  # 30-40%
+#         "󰁼",  # 40-50%
+#         "󰁽",  # 50-60%
+#         "󰁾",  # 60-70%
+#         "󰁿",  # 70-80%
+#         "󰂀",  # 80-90%
+#         "󰂁",  # 90-100%
+#     ],
+# )
 
 
 top_bar = [
-    # widget.Chord(background=blue),
+    # widget.Chord(background=c["blue"]),
     widget.Sep(linewidth=0, padding=10),
     widget.TextBox(
         text="󱓞",
         padding=7,
         fontsize=fontsize2,
-        foreground=yellow,
+        foreground=role_colors["launcher"],
         mouse_callbacks={"Button1": lazy.spawn(menu_launcher)},
     ),
     widget.Sep(linewidth=0, padding=sep),
@@ -367,48 +464,56 @@ top_bar = [
         font="JetBrainsMono Nerd Font",
         fontsize=16,
         highlight_method="line",
-        highlight_color=[mauve],
+        highlight_color=[role_colors["groupbox_highlight"]],
         block_highlight_text_color=background,
         borderwidth=3,
-        this_current_screen_border=foreground,
-        active=foreground,
-        inactive=blue,
-        urgent=red,
+        this_current_screen_border=role_colors["groupbox_highlight_border"],
+		active=role_colors["groupbox_active"],
+    	inactive=role_colors["groupbox_inactive"],
+    	urgent=role_colors["groupbox_urgent"],
         padding_x=3,
-        hide_unused=True,
+        # hide_unused=True,
     ),
     widget.Sep(linewidth=0, padding=sep),
-    widget.CurrentLayout(use_mask=True, mode="icon", scale=0.5, foreground=peach),
+    widget.CurrentLayout(
+		use_mask=True,
+		mode="icon",
+		scale=0.5,
+		foreground=role_colors["layout_icon"],
+	),
     # groupbox
     # widget.Spacer(length=bar.STRETCH),
-    widget.WindowCount(foreground=red),
-    widget.WindowName(max_chars=40, foreground=red),
+    widget.WindowCount(foreground=role_colors["window_count"]),
+    widget.WindowName(
+			max_chars=40,
+			foreground=role_colors["window_title"],
+		),
     widget.Spacer(length=bar.STRETCH),
     # widgets sistema
     widget.Chord(background=background),
     widget.Sep(linewidth=0, padding=sep),
     widget.Sep(linewidth=0, padding=sep),
     widget.TextBox(
-        text="", fontsize=fontsize3, foreground=green, background=background
+        text="", fontsize=fontsize3, foreground=role_colors["temp"], background=background
     ),
-    widget.ThermalSensor(background=background, foreground=green),
+    widget.ThermalSensor(background=background, foreground=role_colors["temp"]),
     widget.Sep(linewidth=0, padding=sep),
     widget.TextBox(
-        text="﬙", fontsize=fontsize3, foreground=green, background=background
+        text="﬙", fontsize=fontsize3, foreground=role_colors["cpu"], background=background
     ),
-    widget.CPU(background=background, foreground=green, format="{load_percent}%"),
+    widget.CPU(background=background, foreground=role_colors["cpu"], format="{load_percent}%"),
     widget.Sep(linewidth=0, padding=sep),
     widget.TextBox(
-        text="", fontsize=fontsize3, foreground=green, background=background
+        text="", fontsize=fontsize3, foreground=role_colors["ram"], background=background
     ),
     widget.Memory(
         background=background,
         format="{MemUsed: .2f}{mm}",
         measure_mem="G",
-        foreground=green,
+        foreground=role_colors["ram"],
     ),
     widget.Sep(linewidth=0, padding=sep2),
-    widget.Volume(emoji=True, emoji_list=["", " ", " ", ""], fontsize=14),
+    widget.Volume(emoji=True, emoji_list=["", " ", " ", ""], fontsize=14, foreground=role_colors["volume"]),
     batterywidget,
     widget.Systray(background=background, padding=8),
     widget.Sep(linewidth=0, padding=sep2),
@@ -416,23 +521,23 @@ top_bar = [
         text="",
         padding=7,
         fontsize=fontsize3,
-        foreground=primary,
+        foreground=role_colors["time"],
         background=background,
     ),
-    widget.Clock(format="%H:%M", foreground=primary, background=background),
+    widget.Clock(format="%H:%M", foreground=role_colors["time"], background=background),
     widget.TextBox(
         text="",
         padding=7,
         fontsize=fontsize3,
-        foreground=primary,
+        foreground=role_colors["date"],
         background=background,
     ),
-    widget.Clock(format="%a %d %b", foreground=primary, background=background),
+    widget.Clock(format="%a %d %b", foreground=role_colors["date"], background=background),
     widget.TextBox(
         text="󰐥",
         padding=7,
         fontsize=fontsize2,
-        foreground=peach,
+        foreground=role_colors["power"],
         mouse_callbacks={"Button1": lazy.spawn(menu_power)},
     ),
     widget.Sep(linewidth=0, padding=sep),
@@ -445,7 +550,7 @@ top_bar_height = 30
 
 top_sep = 10
 right_sep = 13
-bottom_sep = 2
+bottom_sep = 0
 left_sep = 13
 
 screens = [
@@ -454,9 +559,10 @@ screens = [
             top_bar,
             top_bar_height,
             background=background,
-            border_color=alpha,
+            # border_color=alpha,
             borderwidth=0,
             margin=[top_sep, right_sep, bottom_sep, left_sep],
+            opacity = BAR_OPACITY
         )
     )
 ]
@@ -521,7 +627,9 @@ idle_inhibitors = []  # type: list
 wmname = "LG3D"
 
 
+
 @hook.subscribe.startup_once
 def autostart():
-    script = os.path.expanduser(f"{homedir}/.config/qtile/autostart.sh")
-    subprocess.run([script])
+    subprocess.Popen(["pkill", "-f", "watch-wallpaper.sh"])
+    subprocess.Popen([os.path.expanduser("~/.config/qtile/autostart.sh")])
+    subprocess.Popen([os.path.expanduser("~/.config/qtile/scripts/watch-wallpaper.sh")])
